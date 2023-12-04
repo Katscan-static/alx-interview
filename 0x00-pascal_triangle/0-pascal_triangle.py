@@ -4,7 +4,10 @@
 
 def pascals_triangle(n):
 
-    """Generate Pascal's triangle with 'n' rows.
+    """
+    0-pascal_triangle.py:
+
+    Generate Pascal's triangle with 'n' rows.
 
     This function creates Pascal's triangle up to 'n'.
 
