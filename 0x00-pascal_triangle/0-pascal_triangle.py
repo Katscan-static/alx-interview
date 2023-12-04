@@ -4,7 +4,7 @@
 """ This module returns a list of lists that has pascals triangle. """
 
 
-def pascals_triangle(n):
+def pascal_triangle(n):
     """
     0-pascal_triangle.py:
 
