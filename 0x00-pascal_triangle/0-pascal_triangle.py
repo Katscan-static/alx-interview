@@ -19,7 +19,6 @@ def pascal_triangle(n):
         list: A list of lists representing Pascal's triangle.
     """
 
-
     temp = []
     pascals_init = [1]
 
