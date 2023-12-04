@@ -3,15 +3,16 @@
 
 
 def pascals_triangle(n):
+
     """Generate Pascal's triangle with 'n' rows.
 
     This function creates Pascal's triangle up to 'n'.
 
     Args:
-    - n (int): The number of rows to generate for Pascal's triangle.
+        n (int): The number of rows to generate for Pascal's triangle.
 
     Returns:
-    - list: A list of lists representing Pascal's triangle.
+        list: A list of lists representing Pascal's triangle.
     """
 
     temp = []
