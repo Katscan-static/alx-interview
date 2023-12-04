@@ -1,9 +1,10 @@
 #!/usr/bin/python3
+
+
 """ This module returns a list of lists that has pascals triangle. """
 
 
 def pascals_triangle(n):
-
     """
     0-pascal_triangle.py:
 
@@ -17,6 +18,7 @@ def pascals_triangle(n):
     Returns:
         list: A list of lists representing Pascal's triangle.
     """
+
 
     temp = []
     pascals_init = [1]
