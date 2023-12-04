@@ -20,7 +20,6 @@ def pascal_triangle(n):
     """
 
     temp = []
-    pascals_init = [1]
 
     if n <= 0:
         return temp
@@ -31,8 +30,5 @@ def pascal_triangle(n):
 
         if i > 1:
             for c in range(1, i):
-                try:
-                    temp[i][c] = temp[i - 1][c - 1] + temp[i - 1][c]
-                except IndexError:
-                    temp[i].append(1)
+                temp[i][c] = temp[i - 1][c - 1] + temp[i - 1][c]
     return temp
