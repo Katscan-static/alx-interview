@@ -3,6 +3,7 @@
     this module checks if all boxes have keys to open all boxes
 """
 
+
 def canUnlockAll(boxes):
     """
         canUnlockAll:
@@ -19,12 +20,12 @@ def canUnlockAll(boxes):
     keys = boxes[0]
 
     while keys:
-            new_keys = []
-            for key in keys:
-                if key < len(boxes) and key not in visited:
-                    visited.add(key)
-                    new_keys.extend(boxes[key])
+        new_keys = []
+        for key in keys:
+            if key < len(boxes) and key not in visited:
+                visited.add(key)
+                new_keys.extend(boxes[key])
 
-            keys = new_keys
+        keys = new_keys
 
     return len(visited) == len(boxes)
