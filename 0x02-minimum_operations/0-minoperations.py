@@ -15,11 +15,15 @@ def minOperations(n):
         Returns:
             int - number of operations
     """
-    hold1 = n
-    if n > 1:
-        for i in range(2, n):
-            if not (n % i) and (n/i + i) < hold1:
-                hold1 = (n/i + i)
-            elif (n/i + i) > hold1:
-                return int(hold1)
-    return 0
+    if n <= 1:
+        return 0
+
+    min_ops = n
+
+    for i in range(2, n):
+        if n % i == 0:
+            ops = minOperations(n // i) + i
+            if ops < min_ops:
+                min_ops = ops
+
+    return min_ops
