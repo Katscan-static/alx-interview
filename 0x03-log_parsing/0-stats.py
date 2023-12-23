@@ -1,80 +1,51 @@
 #!/usr/bin/python3
 """
-Log Parsing Module
-
-This module provides functions for parsing
-log files and generating statistics from log data.
+Script that reads stdin line by line and computes metrics.
+After every 10 lines and/or a keyboard interruption (CTRL + C),
+print these statistics from the beginning: Total file size
+and number of lines by status code.
+excecute: ./0-generator.py | ./0-stats.py
 """
 import sys
-import re
-from collections import Counter, OrderedDict
 
-file_sizes = []
-allowed_codes = [200, 301, 400, 401, 403, 404, 405, 500]
+count = 0
+total_size = 0
+status_code = {'200': 0, '301': 0, '400': 0, '401': 0,
+               '403': 0, '404': 0, '405': 0, '500': 0}
 
 
-def parse_line(lines):
-    """Parse log lines and return statistics.
+def print_metrics():
+    """Method to print the statistics from the beginning"""
 
-    Args:
-        lines (iterable): An iterable containing log lines.
+    print("File size: {}".format(total_size))
 
-    Returns:
-        tuple: A tuple containing the total file size
-        and a dictionary of status code counts.
+    for key, value in sorted(status_code.items()):
+        if value > 0:
+            print("{}: {}".format(key, value))
 
-    This function parses log lines, filters out
-    invalid status codes, and counts the occurrences
-    of valid status codes within sets of 10 lines.
+try:
+    for line in sys.stdin:
 
-    """
-    status_codes = []
-    pattern = (r'^(\d+\.\d+\.\d+\.\d+) - \[('
-               r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+)\] '
-               r'"GET /projects/\d+ HTTP/1\.1" (\d+) (\d+)$')
-    count = 0
-    for line in lines:
-        match = re.match(pattern, line)
-        if match:
-            status_code = int(match.group(3))
-            if status_code in allowed_codes:
-                status_codes.append(status_code)
-            file_sizes.append(int(match.group(4)))
+        try:
+            code = line.split()[-2]
+            if code in status_code.keys():
+                status_code[code] += 1
+        except BaseException:
+            pass
+
+        try:
+            size = line.split()[-1]
+            total_size += int(size)
+        except BaseException:
+            pass
+
+        # print metrics every 10 lines
         count += 1
-        if count >= 10:
-            break
-    sorted_codes = sorted(status_codes)
-    status_occurrences = dict(OrderedDict(Counter(sorted_codes)))
-    return [sum(file_sizes), status_occurrences]
+        if (count % 10 == 0):
+            print_metrics()
 
+    print_metrics()
 
-def print_stat(stats):
-    """Print statistics.
-
-    Args:
-        stats (list): A list containing the total file
-        size and a dictionary of status code counts.
-
-    Returns:
-        None
-    This function prints the total file size and a
-    count of status codes.
-    """
-    print(f"Filesize: {stats[0]}")
-    for key, value in stats[1].items():
-        print(f"{key}: {value}")
-
-
-def main():
-    """Main function."""
-    lines = sys.stdin
-    try:
-        while True:
-            for _ in range(10):
-                stats = parse_line(lines)
-                print_stat(stats)
-    except KeyboardInterrupt:
-        pass
-
-
-if __name__ == "__main__":
+except KeyboardInterrupt:
+    print_metrics()
+    raise
