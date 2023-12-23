@@ -1,51 +1,52 @@
 #!/usr/bin/python3
-"""
-Script that reads stdin line by line and computes metrics.
-After every 10 lines and/or a keyboard interruption (CTRL + C),
-print these statistics from the beginning: Total file size
-and number of lines by status code.
-excecute: ./0-generator.py | ./0-stats.py
-"""
+
+'''
+Reads stdin line by line and computes metrics
+'''
 import sys
 
-count = 0
-total_size = 0
-status_code = {'200': 0, '301': 0, '400': 0, '401': 0,
-               '403': 0, '404': 0, '405': 0, '500': 0}
+if __name__ == "__main__":
 
+    status_codes = {200: 0, 301: 0, 400: 0, 401: 0,
+                    403: 0, 404: 0, 405: 0, 500: 0}
+    file_size = [0]
+    count = 1
 
-def print_metrics():
-    """Method to print the statistics from the beginning"""
+    def print_stats():
+        '''
+        Prints file size and stats for every 10 loops
+        '''
+        print('File size: {}'.format(file_size[0]))
 
-    print("File size: {}".format(total_size))
+        for code in sorted(status_codes.keys()):
+            if status_codes[code] != 0:
+                print('{}: {}'.format(code, status_codes[code]))
 
-    for key, value in sorted(status_code.items()):
-        if value > 0:
-            print("{}: {}".format(key, value))
-
-try:
-    for line in sys.stdin:
-
+    def parse_stdin(line):
+        '''
+        Checks the stdin for matches
+        '''
         try:
-            code = line.split()[-2]
-            if code in status_code.keys():
-                status_code[code] += 1
+            line = line[:-1]
+            word = line.split(' ')
+            # File size is last parameter on stdout
+            file_size[0] += int(word[-1])
+            # Status code comes before file size
+            status_code = int(word[-2])
+            # Move through dictionary of status codes
+            if status_code in status_codes:
+                status_codes[status_code] += 1
         except BaseException:
             pass
 
-        try:
-            size = line.split()[-1]
-            total_size += int(size)
-        except BaseException:
-            pass
-
-        # print metrics every 10 lines
-        count += 1
-        if (count % 10 == 0):
-            print_metrics()
-
-    print_metrics()
-
-except KeyboardInterrupt:
-    print_metrics()
-    raise
+    try:
+        for line in sys.stdin:
+            parse_stdin(line)
+            # print the stats after every 10 outputs
+            if count % 10 == 0:
+                print_stats()
+            count += 1
+    except KeyboardInterrupt:
+        print_stats()
+        raise
+    print_stats()
