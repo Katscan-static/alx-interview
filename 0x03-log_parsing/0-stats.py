@@ -1,37 +1,50 @@
 #!/usr/bin/python3
-'''a script that reads stdin line by line and computes metrics'''
-
-
+"""Log Parser"""
 import sys
+file_count: list = [0]
 
-cache = {'200': 0, '301': 0, '400': 0, '401': 0,
-         '403': 0, '404': 0, '405': 0, '500': 0}
-total_size = 0
-counter = 0
 
-try:
-    for line in sys.stdin:
-        line_list = line.split(" ")
-        if len(line_list) > 4:
-            code = line_list[-2]
-            size = int(line_list[-1])
-            if code in cache.keys():
-                cache[code] += 1
-            total_size += size
-            counter += 1
+def print_stats() -> None:
+    """
+    Print statistics of status_codes
+    """
+    print('File size: {}'.format(file_count[0]))
+    for key in sorted(status_codes.keys()):
+        if status_codes[key]:
+            print('{}: {}'.format(key, status_codes[key]))
 
-        if counter == 10:
-            counter = 0
-            print('File size: {}'.format(total_size))
-            for key, value in sorted(cache.items()):
-                if value != 0:
-                    print('{}: {}'.format(key, value))
 
-except Exception as err:
-    pass
+def scan_input_line(line: list) -> None:
+    """
+    Checks the line for matches
+    scan through the string lines
+    """
+    try:
+        my_line = line[:-1]
+        line_item = my_line.split(' ')
+        file_count[0] += int(line_item[-1])
+        status_code = int(line_item[-2])
+        if status_code in status_codes:
+            status_codes[status_code] += 1
+    except BaseException:
+        pass
 
-finally:
-    print('File size: {}'.format(total_size))
-    for key, value in sorted(cache.items()):
-        if value != 0:
-            print('{}: {}'.format(key, value))
+
+if __name__ == '__main__':
+    status_codes: map = {
+        200: 0, 301: 0, 400: 0, 401: 0,
+        403: 0, 404: 0, 405: 0, 500: 0
+        }
+    line_count: int = 1
+
+    try:
+        for line in sys.stdin:
+            scan_input_line(line)
+            """ print after every 10 lines """
+            if line_count > 0 and line_count % 10 == 0:
+                print_stats()
+            line_count += 1
+    except KeyboardInterrupt:
+        print_stats()
+        raise
+    print_stats()
